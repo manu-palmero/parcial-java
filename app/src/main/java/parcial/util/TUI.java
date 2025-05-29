@@ -68,6 +68,10 @@ public class TUI {
                 panel.addComponent(new Button(opcion, () -> {
                     MessageDialog.showMessageDialog(gui, opcion, opcion);}));
             }
+
+            // Agregar panel a la ventana
+            ventana.setComponent(panel);
+            gui.addWindowAndWait(ventana);
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
