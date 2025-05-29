@@ -1,4 +1,4 @@
-# IDE files
+# Archivos de IDE
 .vscode
 
 # Compiled class file
@@ -30,3 +30,6 @@ replay_pid*
 
 # Ignore Gradle build output directory
 build
+
+# Bases de datos
+*.db
