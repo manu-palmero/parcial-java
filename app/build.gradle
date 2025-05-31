@@ -11,7 +11,6 @@ repositories {
 
 dependencies {
     implementation 'com.h2database:h2:2.3.232'
-    implementation 'org.fusesource.jansi:jansi:2.4.2'
     implementation 'com.googlecode.lanterna:lanterna:3.1.1'
 
 

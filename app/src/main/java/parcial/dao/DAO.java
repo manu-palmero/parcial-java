@@ -18,7 +18,7 @@ public class DAO {
     }
 
     public void inicializar() {
-        String sql = "CREATE TABLE IF NOT EXISTS ejemplo (dni INT PRIMARY KEY, nombre VARCHAR(255))";
+        String sql = "CREATE TABLE IF NOT EXISTS ejemplo (dni INT PRIMARY KEY, nombre VARCHAR(255));";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.executeUpdate();
         } catch (SQLException e) {
