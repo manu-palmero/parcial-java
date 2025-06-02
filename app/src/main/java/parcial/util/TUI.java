@@ -1,7 +1,6 @@
 package parcial.util;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import com.googlecode.lanterna.gui2.BasicWindow;
 import com.googlecode.lanterna.gui2.Button;
@@ -12,7 +11,9 @@ import com.googlecode.lanterna.gui2.MultiWindowTextGUI;
 import com.googlecode.lanterna.gui2.Panel;
 import com.googlecode.lanterna.gui2.dialogs.MessageDialog;
 import com.googlecode.lanterna.screen.Screen;
+import com.googlecode.lanterna.screen.TerminalScreen;
 import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
+import com.googlecode.lanterna.terminal.Terminal;
 
 public class TUI {
     public TUI() {
@@ -79,12 +80,13 @@ public class TUI {
     public void inicio() {
         try {
             // Crea la terminal y la pantalla
-            Screen screen = new DefaultTerminalFactory().createScreen();
+            Terminal terminal = new DefaultTerminalFactory().createTerminal();
+            TerminalScreen screen = new TerminalScreen(terminal);
             screen.startScreen();
 
             // Crear interfaz gráfica basada en texto
             MultiWindowTextGUI gui = new MultiWindowTextGUI(screen);
-            BasicWindow ventana = new BasicWindow("Inicio");
+            BasicWindow ventana = new BasicWindow("Administración de Clientes");
             ventana.setHints(java.util.Arrays.asList(BasicWindow.Hint.CENTERED));
 
             // PANELES
@@ -102,27 +104,39 @@ public class TUI {
             EmptySpace espacio = new EmptySpace();
             espaciador.addComponent(espacio);
 
-            ArrayList<String> opciones = new ArrayList<>();
-            opciones.add("Opción 1");
-            opciones.add("Opción 2");
-            opciones.add("Opción 3");
-            opciones.add("Opción 4");
-            opciones.add("Opción 5");
+            // BOTONES
 
-            // Botones
+            // ArrayList<String> opciones = new ArrayList<>();
+            // opciones.add("Agregar cliente");
+            // opciones.add("Listar clientes");
+
+            // for (String opcion : opciones) {
+            // panel.addComponent(new Button(opcion, () -> {
+            // MessageDialog.showMessageDialog(gui, "Opción seleccionada", "Se seleccionó: "
+            // + opcion);
+            // }));
+            // }
+
+            Button listarClientes = new Button("Listar clientes", () -> {
+                // MessageDialog.showMessageDialog(gui, "Opción seleccionada", "Se seleccionó:
+                // Listar clientes");
+                listarClientes(terminal, screen, gui, ventana);
+            });
+            Button agregarCliente = new Button("Agregar cliente", () -> {
+                // MessageDialog.showMessageDialog(gui, "Opción seleccionada", "Se seleccionó:
+                // Agregar cliente");
+                agregarClientes(terminal, screen, gui, ventana);
+            });
+
             Button salir = new Button("Salir", () -> {
                 ventana.close();
             });
-
-            for (String opcion : opciones) {
-                panel.addComponent(new Button(opcion, () -> {
-                    MessageDialog.showMessageDialog(gui, "Opción seleccionada", "Se seleccionó: " + opcion);
-                }));
-
-            }
-
+            // Agregar botones al panel
+            panel.addComponent(listarClientes);
+            panel.addComponent(agregarCliente);
+            // Agregar botones al panel inferior
             panelInferior.addComponent(salir);
-
+            // Agregar componentes al panel
             panel.addComponent(espaciador);
             panel.addComponent(panelInferior);
 
@@ -132,5 +146,15 @@ public class TUI {
         } catch (IOException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    public void listarClientes(Terminal terminal, TerminalScreen screen, MultiWindowTextGUI gui, BasicWindow ventana) {
+        // Implementar lógica para listar clientes
+        System.out.println("Listando clientes...");
+    }
+
+    public void agregarClientes(Terminal terminal, TerminalScreen screen, MultiWindowTextGUI gui, BasicWindow ventana) {
+        // Implementar lógica para agregar un cliente
+        System.out.println("Agregando cliente...");
     }
 }
