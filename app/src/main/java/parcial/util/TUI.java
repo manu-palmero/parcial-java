@@ -185,7 +185,6 @@ public class TUI {
         MessageDialog.showMessageDialog(gui, "Error", mensaje);
         gui.setTheme(defaultTheme); // Reinicia la ventana al tema original
         ventana.setTheme(ventanaTheme);
-        // TODO Hacer que se ejecute en una pantalla a parte para que no se vea encima
-        // de lo otro
+        // TODO Hacer que se ejecute en una pantalla a parte para que no se vea encima de lo otro
     }
 }
