@@ -39,8 +39,15 @@ O ejecutar la clase `Main` desde tu IDE.
 
 ```
 parcial-java/
-├── src/
-│   └── Main.java
+├── app/
+│   ├── build.gradle
+│   └── src/
+│       ├── ...
+│       └── main
+│           └── java
+│               └── parcial
+│                   ├── ...
+│                   └── Main.java
 ├── README.md
 └── ...
 ```
