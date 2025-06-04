@@ -6,64 +6,112 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import parcial.model.Cliente;
+import parcial.util.DBConnection;
 
-public class DAO {
-    private final Connection connection;
+public class DAO implements DAOInterface {
+    protected static final Logger logger = LogManager.getLogger();
+    /**
+     * La conexión a la base de datos utilizada por esta instancia de DAO.
+     * Se inicializa usando la clase singleton DBConnection para asegurar que se use una única conexión en toda la aplicación.
+     */
+    private final Connection connection = DBConnection.getConnection();
 
-    public DAO(Connection connection) {
-        this.connection = connection;
-    }
-
+    @Override
     public void inicializar() {
-        String sql = "CREATE TABLE IF NOT EXISTS ejemplo (dni INT PRIMARY KEY, nombre VARCHAR(255));";
+        logger.info("Inicializando la base de datos...");
+        String sql = "CREATE TABLE IF NOT EXISTS clientes (dni INT PRIMARY KEY, nombre VARCHAR(255));";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println("Error SQL: " + e);
-        }
-    }
-
-    public void insertarEjemplo(Cliente cliente) throws SQLException {
-        String sql = "INSERT INTO ejemplo (id, nombre) VALUES (?, ?)";
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setInt(1, cliente.getId());
-            pstmt.setString(2, cliente.getNombre());
-            pstmt.executeUpdate();
-        }
-    }
-
-    public Cliente obtenerEjemploPorId(int id) throws SQLException {
-        String sql = "SELECT * FROM ejemplo WHERE id = ?";
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                return new Cliente(rs.getInt("id"), rs.getString("nombre"));
+            int filasAfectadas = pstmt.executeUpdate();
+            if (filasAfectadas > 0) {
+                logger.info("Tabla clientes creada.");
+            } else {
+                logger.debug("La tabla clientes ya existe, no se creará de nuevo.");
             }
+        } catch (SQLException e) {
+            logger.error(
+                    "Error SQL: No se pudo inicializar la tabla clientes.\n" +
+                            e.getMessage());
+        }
+    }
+
+    @Override
+    public ArrayList<Cliente> obtenerClientes() {
+        ArrayList<Cliente> clientes = new ArrayList<>();
+        String sql = "SELECT dni, nombre FROM clientes";
+        logger.debug("Obteniendo la lista de clientes...");
+        try (Statement stmt = connection.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                int dni = rs.getInt("dni");
+                String nombre = rs.getString("nombre");
+                clientes.add(new Cliente(dni, nombre));
+            }
+            logger.debug("Lista de clientes obtenida.");
+        } catch (SQLException e) {
+            logger.error(
+                    "Error SQL: No se pudo obtener la lista de clientes.\n" +
+                            e.getMessage());
+        }
+        return clientes;
+    }
+
+    @Override
+    public boolean agregarCliente(Cliente cliente) {
+        logger.debug("Agregando al cliente " + cliente.getNombre() +
+                " con DNI " +
+                cliente.getDni() + ".");
+        String sql = "INSERT INTO clientes (dni, nombre) VALUES (?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, cliente.getDni());
+            pstmt.setString(2, cliente.getNombre());
+            int filasAfectadas = pstmt.executeUpdate();
+            return filasAfectadas > 0;
+        } catch (SQLException e) {
+            logger.error(
+                    "Error SQL: No se pudo agregar el cliente " + cliente.getNombre() +
+                            " con DNI " +
+                            cliente.getDni() + ".\n" +
+                            e.getMessage());
+            return false;
+        }
+    }
+
+    @Override
+    public Cliente buscarCliente(int dni) {
+        String sql = "SELECT dni, nombre FROM clientes WHERE dni = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, dni);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    String nombre = rs.getString("nombre");
+                    return new Cliente(dni, nombre);
+                }
+            }
+        } catch (SQLException e) {
+            logger.error(
+                    "Error SQL: " +
+                            e.getMessage());
         }
         return null;
     }
 
-    public List<Cliente> listarEjemplos() throws SQLException {
-        List<Cliente> ejemplos = new ArrayList<>();
-        String sql = "SELECT * FROM ejemplo";
-        try (Statement stmt = connection.createStatement();
-                ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                ejemplos.add(new Cliente(rs.getInt("id"), rs.getString("nombre")));
-            }
-        }
-        return ejemplos;
-    }
-
-    public void eliminarEjemplo(int id) throws SQLException {
-        String sql = "DELETE FROM ejemplo WHERE id = ?";
+    @Override
+    public boolean eliminarCliente(int dni) {
+        String sql = "DELETE FROM clientes WHERE dni = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            pstmt.executeUpdate();
+            pstmt.setInt(1, dni);
+            int filasAfectadas = pstmt.executeUpdate();
+            return filasAfectadas > 0;
+        } catch (SQLException e) {
+            logger.error(
+                    "Error SQL: " +
+                            e.getMessage());
+            return false;
         }
     }
 }
