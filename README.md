@@ -47,14 +47,15 @@ parcial-java/
 │           └── java
 │               └── parcial
 │                   ├── ...
-│                   └── Main.java
-├── README.md
+│                   └── Main.java (Clase principal)
+├── README.md (Este archivo)
+├── PrimerParcial.docx (Consignas)
 └── ...
 ```
 
 ## Autor
 
-- Manu
+- Manuel Palmero
 
 ## Licencia
 
