@@ -384,6 +384,12 @@ public class TUI {
         Button guardarBtn = new Button("Guardar", () -> {
             String nombre = nombreBox.getText().trim();
             String dniString = dniBox.getText().trim();
+
+            if (!nombre.matches("^[\\p{L}\\s]+$")) {
+                error("El nombre solo debe contener letras y espacios.");
+                return;
+            }
+
             if (nombre.isEmpty() || dniString.isEmpty()) {
                 error("Debe completar ambos campos.");
                 return;
