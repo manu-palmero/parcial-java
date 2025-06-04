@@ -13,7 +13,7 @@ import parcial.exception.DatabaseException;
 public class DBConnection {
     private static final String SEPARATOR = File.separator;
     private static final String LOCATION = System.getProperty("user.dir") + SEPARATOR;
-    private static final String DB_FILE = LOCATION + "database";
+    private static final String DB_FILE = LOCATION + "data/database";
     private static final String URL = "jdbc:h2:" + DB_FILE;
     private static final String USER = "";
     private static final String PASSWORD = "";
